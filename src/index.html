@@ -5,20 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        body {
+      
+        html, body {
             margin: 0;
             padding: 0;
+            height: 100%;
+        }
+        .xy-editor {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* background-color: skyblue; */
+        }
+        .xy-editor-top {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 4%;
+            background-color: pink;
+        }
+        .xy-editor-left {
+            position: absolute;
+            top: 4%;
+            left: 0;
+            width: 10%;
+            height: 95%;
+            background-color: green;
+        }
+        .xy-editor-content {
+            position: absolute;
+            top: 4%;
+            left: 10%;
+            width: 90%;
+            height: 95%;
         }
     </style>
 </head>
 <body>
-    <canvas id="myCanvas"></canvas>
+    <!-- 
+        1.textAlign的作用
+
+        textAlign属性定义了文本相对于给定x坐标点的水平对齐方式。它决定了文本从哪个位置开始绘制，具体取决于您选择的值。
+
+        可选值：
+            start: 文本从x坐标开始向右排列（对于左至右的语言）或向左排列（对于右至左的语言）。这是默认值。
+            end: 与start相反，文本从x坐标结束向左排列（对于左至右的语言）或向右排列（对于右至左的语言）。
+            left: 文本总是从x坐标左边开始排列。
+            right: 文本总是从x坐标右边结束排列。
+            center: 文本以x坐标为中心左右对称排列。
+            
+        2.textBaseline的作用
+
+        textBaseline属性定义了文本相对于给定y坐标点的垂直对齐方式。它决定了文本的基线（baseline）如何与y坐标对齐，具体取决于您选择的值。
+
+        可选值：
+            top: 文本顶部与y坐标对齐。
+            hanging: 文本悬挂基线与y坐标对齐。
+            middle: 文本中间与y坐标对齐。
+            alphabetic: 默认值，文本基于字母基线与y坐标对齐。
+            ideographic: 文本基于表意文字基线与y坐标对齐。
+            bottom: 文本底部与y坐标对齐。
+
+
+    -->
+    <div class="xy-editor">
+        <div class="xy-editor-top">
+        </div>
+        <div class="xy-editor-left">
+        </div>
+        <div class="xy-editor-content">
+            <canvas id="myCanvas"></canvas>
+        </div>
+    </div>
+
     <script  type="module">
-        import {Canvas} from './index.js';
+        import {Canvas,Ruler} from './index.js';
+        let xyConetent = document.querySelector('.xy-editor-content');
         let xyEditor = new Canvas('#myCanvas',{
-            width: window.innerWidth,
-            height: window.innerHeight
+            width: xyConetent.clientWidth,
+            height: xyConetent.clientHeight
         })
+        let ruler = new Ruler();
+        xyEditor.add(ruler);
     </script>
 </body>
 </html>

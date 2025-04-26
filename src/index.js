@@ -4,7 +4,7 @@ import { Canvas } from './Canvas.js'
 // import { Line } from './src/shapes/Line'
 // import { Dot } from './src/shapes/Dot'
 // import { Arrow } from './src/shapes/Arrow'
-// import { Ruler } from './src/shapes/Ruler'
+import { Ruler } from './shapes/Ruler.js'
 // import { Text } from './src/shapes/Text'
 // import { Mask } from './src/shapes/Mask'
 // import { Image as CanvasImage } from './src/shapes/Image'
@@ -22,7 +22,7 @@ export {
     // Line,
     // Dot,
     // Arrow,
-    // Ruler,
+    Ruler,
     // Text,
     // Mask,
     // CrosshairLine,

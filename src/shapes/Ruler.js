@@ -1,12 +1,11 @@
-const spacing = 50;     // 每个刻度之间的间距
-const rulerHeight = 20; // 标尺高度
-const tickHeight = 5;  // 刻度高度
-const tickWidth = 5;    // 刻度宽度
+let gridSize = 30;     // 一个方格的长度
+const minGridSize = 1;     // 每个刻度之间的间距
 const fontSize = 12;    // 字体大小
 const rulerColor = '#eee';
 const rulerHeaderWidth = 20;
 const rulerHeadeHeight = 20;
 import {Object2D} from './Object2D.js'
+// 一个刻度表示一个grid  grid 可以是30*30像素，也可以是1*1像素，也可以是100*100像素
 export class Ruler extends Object2D{
     constructor(options) {
         super(options)
@@ -29,18 +28,30 @@ export class Ruler extends Object2D{
     }
     drawHorizontalRulerText(ctx) {
         let width = ctx.canvas.width;
-        for (let i = 0; i < width; i+= spacing) {
-            ctx.font = `${fontSize}px`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#000';
-            ctx.fillText(i, i+rulerHeadeHeight, rulerHeadeHeight/2);
+        let drawX = 0;
+        for (let i = 0; i < width; i++) {
+            if (gridSize <= 20) {
+                if ((i % 10 === 0)) {
+                    this.drawHorizontalText(ctx, i, drawX);
+                }
+            } else {
+                this.drawHorizontalText(ctx, i, drawX);
+            }
+            drawX += gridSize;
         }
+    }
+    drawHorizontalText(ctx, i, drawX) {
+        ctx.font = `${fontSize}px`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#000';
+        ctx.fillText(i, i+drawX+rulerHeadeHeight, rulerHeadeHeight/2);
+        drawX += gridSize;
     }
     drawHorizontalRuler(ctx) {
         let width = ctx.canvas.width;
         let height = ctx.canvas.height;
-        for (let i = 0; i < width; i+= spacing) {
+        for (let i = 0; i < width; i+= gridSize) {
             ctx.beginPath();
             ctx.lineWidth = 1;
             ctx.moveTo(i,0);
@@ -50,43 +61,60 @@ export class Ruler extends Object2D{
     }
     drawVerticalRulerText(ctx) {
         let height = ctx.canvas.height;
-        for (let i = 0; i < height; i+= spacing) {
+        let drawY = 0;
+        for (let i = 0; i < height; i++) {
             if(i === 0){
+                drawY += gridSize;
                 continue;
             }
-            ctx.save();
-            ctx.font = `${fontSize}px`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.translate(rulerHeadeHeight/2, i+rulerHeadeHeight);//canvas起点先平移到之前canvas y方向的字的位置
-            ctx.rotate(-Math.PI / 2);//canvas在旋转90度
-            ctx.fillText(i, 0, 0);//文字的位置就是当前canvas位置的起点
-            ctx.restore();
+            if (gridSize <= 20) {
+                if ((i % 10 === 0)) {
+                    this.drawVerticalText(ctx, i, drawY);
+                }
+            } else {
+                this.drawVerticalText(ctx, i, drawY);
+               
+            }
+            drawY += gridSize;
+          
+        
+           
         }
+    }
+    drawVerticalText(ctx, i, drawY) {
+        ctx.save();
+        ctx.font = `${fontSize}px`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.translate(rulerHeadeHeight/2, i+drawY+rulerHeadeHeight);//canvas起点先平移到之前canvas y方向的字的位置
+        ctx.rotate(-Math.PI / 2);//canvas在旋转90度
+        ctx.fillText(i, 0, 0);//文字的位置就是当前canvas位置的起点
+        ctx.restore();
     }
     drawVerticalRuler(ctx) {
         let width = ctx.canvas.width;
         let height = ctx.canvas.height;
-        for (let i = 0; i < height; i+= spacing) {
+        for (let i = 0; i < height; i+= gridSize) {
             ctx.beginPath();
             ctx.lineWidth = 1;
             ctx.font = `${fontSize}px`;
-            // ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-            if ((i % (spacing*5)) === 0) { //长刻度 5个一个
-                // ctx.moveTo(0,i);
-                // ctx.lineTo(tickWidth*2,i);
-                // if (i !== 0) {
-                //     ctx.fillText(i, tickWidth*2+ fontSize, i);
-                // }
-            } else {
-                // ctx.moveTo(0,i); //普通刻度
-                // ctx.lineTo(tickWidth,i);
-            }
             ctx.moveTo(0,i); //普通刻度
             ctx.lineTo(width,i);
             ctx.stroke();
         }
+    }
+    redraw(scale, ctx) {
+        let width = ctx.canvas.width;
+        let height = ctx.canvas.height;
+        gridSize = Math.max(minGridSize, Math.ceil(scale * gridSize))
+        console.log(scale, Math.ceil(scale * gridSize), gridSize, 'gridSize');
+        
+        ctx.clearRect(0, 0, width, height);
+        ctx.translate(0,0)
+        ctx.save();
+        this._render(ctx);
+        ctx.restore();
     }
 
     

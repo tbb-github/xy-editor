@@ -1,4 +1,5 @@
 let id = 0;
+import { Ruler } from './shapes/Ruler.js';
 export class Canvas {
     canvasList = [];
     _objects = [];
@@ -8,7 +9,10 @@ export class Canvas {
         this.setOptions(options);
         this.initLowerCanvas();
         this.initCanvasContainer();
-        // this.initUpperCanvas();
+        this.initUpperCanvas();
+        this.initEvents();
+        this.ruler = new Ruler();
+        this.add(this.ruler);
     }
     setOptions(options) {
         Object.assign(this, options);
@@ -38,16 +42,26 @@ export class Canvas {
         this.canvasContainer.style.width = this.width + "px";
         this.canvasContainer.style.height = this.height + "px";
     }
-    // initUpperCanvas() {
-    //     this.upperCanvas = document.createElement("canvas");
-    //     this.upperCanvas.classList.add("upper-canvas-"+id);
-    //     this.canvasList.push(this.upperCanvas)
-    //     this.upperCanvas.width = this.width;
-    //     this.upperCanvas.height = this.height;
-    //     this.setCanvasStyles(this.upperCanvas);
-    //     this.upperCanvas.style.setProperty('z-index', id)
-    //     this.canvasContainer?.appendChild(this.upperCanvas);
-    // }
+    initUpperCanvas() {
+        this.upperCanvas = document.createElement("canvas");
+        this.upperCanvas.classList.add("upper-canvas-"+id);
+        this.canvasList.push(this.upperCanvas)
+        this.upperCanvas.width = this.width;
+        this.upperCanvas.height = this.height;
+        this.setCanvasStyles(this.upperCanvas);
+        this.upperCanvas.style.setProperty('z-index', id)
+        this.canvasContainer?.appendChild(this.upperCanvas);
+    }
+    initEvents() {
+        this.upperCanvas.addEventListener('mousewheel', (event)=>{this.handleMouseWheel(event)})
+    }
+    handleMouseWheel(event) {
+        console.log(this.ruler, 'hhhhhhhhhhhhhhhhhhhhhh');
+        
+        let scale = event.deltaY < 0 ? 1 + 0.2 : 1 - 0.2;
+        this.ruler.redraw(scale, this.lowerContext);
+        // this.requestRenderAll();
+    }
     setCanvasStyles(element, customCanvasStyle = {}) {
         let styles = {
             position: "absolute",
